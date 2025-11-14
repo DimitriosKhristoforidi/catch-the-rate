@@ -3,9 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 export const CatchTheRate = () => {
   const rates = useMemo(
     () => [
-      0.1, 0.35, 0.7, 1.05, 1.4, 1.75, 2.1, 2.45, 2.8, 3.15, 3.5, 3.85, 4.2,
-      4.55, 4.9, 5.25, 5.6, 5.95, 6.3, 6.65, 7.0, 7.35, 7.7, 8.05, 8.4, 8.75,
-      9.1, 9.45, 9.8, 10.15, 10.5,
+      0.1, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0,
     ],
     []
   );
@@ -30,8 +28,10 @@ export const CatchTheRate = () => {
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = window.setInterval(() => {
-        setCurrentRateIndex(() => Math.floor(Math.random() * rates.length));
-      }, 100); // Change rate every 100ms - adjust for speed
+        setCurrentRateIndex((prev) =>
+          prev >= rates.length - 1 ? 0 : prev + 1
+        );
+      }, 90); // Change rate every 100ms - adjust for speed
     }
 
     return () => {
@@ -70,7 +70,7 @@ export const CatchTheRate = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl flex gap-8">
+    <div className="w-full max-w-6xl h-full flex items-center justify-center gap-8">
       {/* Main display area */}
       <div className="flex-1 flex flex-col items-center justify-center">
         <h1 className="text-white text-4xl font-bold mb-8">Catch The Rate</h1>
@@ -116,12 +116,12 @@ export const CatchTheRate = () => {
       </div>
 
       {/* Rates list on the right */}
-      <div className="w-fit bg-white/10 backdrop-blur-lg rounded-3xl p-6 border-2 border-white/20 shadow-2xl">
+      <div className="w-fit bg-white/10 backdrop-blur-lg rounded-3xl p-4 border-2 border-white/20 shadow-2xl fixed right-10 top-10">
         {/* Highest Caught Rate */}
         {highestCaughtRate !== null && (
           <div className="mb-6 pb-6 border-b border-white/20">
             <div className="text-center">
-              <p className="text-white/80 mb-4">🏆Highest Caught</p>
+              <p className="text-white/80 mb-4">🏆 Highest Caught</p>
               <p className="text-yellow-400 text-5xl font-bold tabular-nums">
                 $ {highestCaughtRate.toFixed(1)}
               </p>
@@ -129,11 +129,11 @@ export const CatchTheRate = () => {
           </div>
         )}
 
-        <div className="flex gap-3 flex-wrap max-w-[420px]">
+        <div className="flex flex-col-reverse gap-1">
           {rates.map((rate, index) => (
             <div
               key={index}
-              className={`p-4 rounded-xl transition-all duration-300 border-2 border-transparent ${
+              className={`p-3 rounded-xl transition-all duration-300 border-2 border-transparent ${
                 selectedIndex === index
                   ? "bg-green-500 shadow-lg border-2 border-green-300"
                   : currentRateIndex === index && isRunning
